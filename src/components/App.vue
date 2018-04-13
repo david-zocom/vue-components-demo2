@@ -1,27 +1,45 @@
 <template>
-  <div id="app">
-    <div class="banner">
-      <img
-        src="https://vuejs.org/images/logo.png"
-        width="100"
-        alt="vue"
-        class="logo"
-      />
-      <h1>Welcome to Vue.js</h1>
-    </div>
-    <div class="bottom">
-      To get started, edit <code>./src/components/App.vue</code> and save to reload.<br/>
-      <span class="fade">
-        Checkout <code>./README.md</code> for more usages.
-      </span>
-    </div>
-  </div>
+	<div id="app">
+		<h1>Welcome to Hackerbank, {{name}}</h1>
+		<mitt-saldo
+		 	v-bind:amount="monies"
+			v-bind:name="name" />
+		<gora-betalning
+			v-on:send-payment="sendPayment"
+			v-bind:kontosaldo="monies" />
+		<p> {{paymentMessage}} </p>
+	</div>
 </template>
 
 <script>
-  export default {
-    name: 'app'
-  }
+import Saldo from './Saldo.vue';
+import Betalning from './Betalning.vue';
+export default {
+    name: 'app',
+	components: {
+		'mitt-saldo': Saldo,
+		'gora-betalning': Betalning
+	},
+	data: function() {
+		return {
+			monies: 200000,
+			name: 'Jonathan Hackerman',
+			paymentMessage: ''
+		}
+	},
+	methods: {
+		sendPayment: function(obj) {
+			/*{
+				belopp: belopp,
+				mottagareKonto: nr
+			}*/
+			// dra pengar
+			this.monies -= obj.belopp;
+			// informera användaren om att transaktion genomförts
+			this.paymentMessage = `Du har skickat ${obj.belopp} kr till konto ${obj.mottagareKonto}.`;
+		}
+	}
+}
 </script>
 
 <!-- CSS libraries -->
@@ -29,6 +47,11 @@
 
 <!-- Global CSS -->
 <style>
+div {
+	padding: 4px;
+	margin: 4px;
+}
+
   code {
     font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
     font-size: 0.9em;
@@ -45,11 +68,13 @@
 <!-- It only affect current component -->
 <style scoped>
   #app {
+    background-color: #FF69B4;
     text-align: center;
+    font-family: 'Comic Sans MS', 'Arial', sans-serif;
   }
 
   #app h1 {
-    color: #2c3e50;
+    color: #fff;
     font-weight: 300;
     margin: 0;
   }
